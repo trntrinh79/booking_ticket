@@ -137,50 +137,64 @@ class _EditTicketState extends State<EditTicket> {
                 height: 45,
                 width: MediaQuery.of(context).size.width,
                 child: ElevatedButton(
-                    onPressed: () async {
-                      final moviename = movienameController.value.text;
-                      final datetime = datetimeController.value.text;
-                      final theater = theaterController.value.text;
-                      final seat = seatController.value.text;
-                      final cinema = cinemaController.value.text;
+                  onPressed: () async {
+                    final moviename = movienameController.value.text;
+                    final datetime = datetimeController.value.text;
+                    final theater = theaterController.value.text;
+                    final seat = seatController.value.text;
+                    final cinema = cinemaController.value.text;
 
-                      if (moviename.isEmpty ||
-                          datetime.isEmpty ||
-                          theater.isEmpty ||
-                          seat.isEmpty ||
-                          cinema.isEmpty) {
-                        return;
-                      }
+                    if (moviename.isEmpty ||
+                        datetime.isEmpty ||
+                        theater.isEmpty ||
+                        seat.isEmpty ||
+                        cinema.isEmpty) {
+                      return;
+                    }
 
-                      final TicketData model = TicketData(
-                          moviename: moviename,
-                          datetime: datetime,
-                          theater: theater,
-                          seat: seat,
-                          cinema: cinema,
-                          id: widget.ticket?.id);
-                      if (widget.ticket == null) {
-                        await context.read<TicketCubit>().addTicket(model);
+                    final TicketData model = TicketData(
+                        moviename: moviename,
+                        datetime: datetime,
+                        theater: theater,
+                        seat: seat,
+                        cinema: cinema,
+                        id: widget.ticket?.id);
+                    if (widget.ticket == null) {
+                      int result =
+                          await context.read<TicketCubit>().addTicket(model);
+
+                      setState(() {});
+
+                      if (result > 0) {
+                        setState(() {});
+                        print('complete!!!!!!!!!!!!');
                       } else {
-                        await DatabaseHelper.updateTicket(model);
+                        setState(() {});
+                        print('error!!!!!!!!!!!!!');
                       }
+                    } else {
+                      await context.read<TicketCubit>().updateTicket(model);
+                      setState(() {});
 
-                      Navigator.pop(context);
-                    },
-                    style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
-                            const RoundedRectangleBorder(
-                                side: BorderSide(
-                                  color: Colors.white,
-                                  width: 0.75,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10.0),
-                                )))),
-                    child: Text(
-                      widget.ticket == null ? 'Save' : 'Edit',
-                      style: const TextStyle(fontSize: 20),
-                    )),
+                      print('edited');
+                    }
+                    Navigator.pop(context);
+                  },
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all(
+                          const RoundedRectangleBorder(
+                              side: BorderSide(
+                                color: Colors.white,
+                                width: 0.75,
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.0),
+                              )))),
+                  child: Text(
+                    widget.ticket == null ? 'Save' : 'Edit',
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                ),
               ),
             )
           ],

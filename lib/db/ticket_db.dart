@@ -18,12 +18,16 @@ class DatabaseHelper {
   }
 
   static Future<int> insertTicket(TicketData ticket) async {
-    final db = await get_database_ticket();
-    return await db.insert(
-      "Ticket",
-      ticket.toJson(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    try {
+      final db = await get_database_ticket();
+      return await db.insert(
+        "Ticket",
+        ticket.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } catch (e) {
+      return 0;
+    }
   }
 
   static Future<int> updateTicket(TicketData ticket) async {
